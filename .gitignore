@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.sqlite3
+db.sqlite3
+.env
+
+# Local run artifacts
+smoke-plan.json
+check.log
+*.log
+
+# Node
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

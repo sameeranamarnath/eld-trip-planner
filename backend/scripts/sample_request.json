@@ -1,0 +1,20 @@
+{
+  "current_location": "Green Bay, WI",
+  "pickup_location": "Chicago, IL",
+  "dropoff_location": "Nashville, TN",
+  "cycle_used_hours": 0,
+  "departure_time": "2026-10-01T06:30",
+  "start_odometer": 142500,
+  "header": {
+    "driver_name": "J. Driver",
+    "driver_number": "SCH-4471",
+    "co_driver": "N/A",
+    "home_terminal": "Green Bay, WI",
+    "carrier": "Spotter Freight Systems",
+    "tractor_number": "T-1042",
+    "trailer_number": "TR-5580",
+    "shipper": "Don's Paper Company",
+    "commodity": "Paper products",
+    "load_id": "LD-88231"
+  }
+}

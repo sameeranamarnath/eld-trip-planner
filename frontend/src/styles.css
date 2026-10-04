@@ -1,0 +1,1478 @@
+/* ==========================================================================
+   Spotter ELD - design system
+   ========================================================================== */
+
+/* Two rules keep the look coherent:
+   1. Every surface is a translucent pane of glass floating over the ambient
+      grid below. That is why the palette has to supply both the *fill* of a
+      pane and the *backdrop* it samples - a solid fill would read as plastic.
+   2. Colour is data, never decoration. Each tone pair below maps to exactly
+      one duty status or stop class, so changing a tint always means changing
+      meaning. Adding a status means adding a tone, not a new hex code. */
+:root {
+  /* Ambient backdrop: a cool 46px technical grid under two faint light pools.
+     Everything else is glass laid on top of this. */
+  --bg: #e7ecf4;
+  --bg-grid: rgba(15, 23, 42, 0.075);
+  --bg-glow-a: rgba(96, 150, 255, 0.5);
+  --bg-glow-b: rgba(248, 186, 96, 0.4);
+
+  --ink: #0b1220;
+  --ink-soft: #26364f;
+  --muted: #5b6b85;
+  --muted-2: #8593a8;
+
+  /* Glass fills, thinnest first. --glass is the everyday pane; --glass-strong
+     is for panes that have to stay readable over busy content (map legend,
+     dropdowns, inputs) and --glass-dim for recessed wells and inactive
+     segments. --glass-lip is the 1px inner highlight that sells the material:
+     without it a translucent panel just looks faded. */
+  --glass: rgba(255, 255, 255, 0.58);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-dim: rgba(255, 255, 255, 0.34);
+  --glass-line: rgba(15, 23, 42, 0.08);
+  --glass-line-soft: rgba(15, 23, 42, 0.05);
+  --glass-lip: rgba(255, 255, 255, 0.9);
+  --blur: 20px;
+
+  /* Opaque fallbacks for the rare panel that should not show the grid. */
+  --surface: #ffffff;
+  --surface-2: #f4f7fb;
+  --surface-3: #e9eef7;
+  --border: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.17);
+
+  --accent: #2563eb;
+  --accent-ink: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --accent-line: rgba(37, 99, 235, 0.26);
+
+  /* Duty-status and stop-class tones. Because each tone carries bg + border +
+     ink together, the dark theme restates these instead of re-listing every
+     component that happens to tint itself. */
+  --amber: #f59e0b;
+  --amber-bg: rgba(245, 158, 11, 0.13);
+  --amber-bd: rgba(245, 158, 11, 0.32);
+  --amber-ink: #8a4b06;
+  --amber-soft: rgba(245, 158, 11, 0.13);
+
+  --violet: #7c3aed;
+  --violet-bg: rgba(124, 58, 237, 0.1);
+  --violet-bd: rgba(124, 58, 237, 0.26);
+  --violet-ink: #5b21b6;
+  --violet-soft: rgba(124, 58, 237, 0.1);
+
+  --slate: #64748b;
+  --slate-bg: rgba(100, 116, 139, 0.11);
+  --slate-bd: rgba(100, 116, 139, 0.26);
+  --slate-ink: #3f4c63;
+  --slate-soft: rgba(100, 116, 139, 0.11);
+
+  --green: #059669;
+  --green-bg: rgba(5, 150, 105, 0.11);
+  --green-bd: rgba(5, 150, 105, 0.28);
+  --green-ink: #0b6b4f;
+  --green-soft: rgba(5, 150, 105, 0.11);
+
+  --red: #dc2626;
+  --red-bg: rgba(220, 38, 38, 0.1);
+  --red-bd: rgba(220, 38, 38, 0.28);
+  --red-ink: #991b1b;
+  --red-soft: rgba(220, 38, 38, 0.1);
+
+  --pink-bg: rgba(219, 39, 119, 0.1);
+  --pink-bd: rgba(219, 39, 119, 0.26);
+  --pink-ink: #9d1d5e;
+
+  --drive-bg: rgba(37, 99, 235, 0.1);
+  --drive-bd: rgba(37, 99, 235, 0.26);
+  --drive-ink: #1e3f8f;
+
+  /* Wide and diffuse, not tight and dark: glass reads as glass when the
+     shadow is a soft bloom rather than a hard edge. */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow: 0 12px 28px -16px rgba(15, 23, 42, 0.24), 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 32px 64px -28px rgba(15, 23, 42, 0.34), 0 2px 6px rgba(15, 23, 42, 0.06);
+
+  --radius-sm: 9px;
+  --radius: 13px;
+  --radius-lg: 20px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Dark theme: the same geometry as an operations console. Note that the whole
+   override list this file used to carry - one rule per tinted component - is
+   gone: the tones above already describe themselves, so restating the tokens
+   is enough. Anything that still needs a bespoke rule here is a smell. */
+:root[data-theme='dark'] {
+  --bg: #070b13;
+  --bg-grid: rgba(148, 178, 226, 0.075);
+  --bg-glow-a: rgba(45, 96, 190, 0.42);
+  --bg-glow-b: rgba(180, 120, 40, 0.22);
+
+  --ink: #e9eefa;
+  --ink-soft: #c3cfe2;
+  --muted: #93a2ba;
+  --muted-2: #74849e;
+
+  --glass: rgba(148, 178, 226, 0.07);
+  --glass-strong: rgba(148, 178, 226, 0.13);
+  --glass-dim: rgba(148, 178, 226, 0.05);
+  --glass-line: rgba(148, 178, 226, 0.16);
+  --glass-line-soft: rgba(148, 178, 226, 0.11);
+  --glass-lip: rgba(255, 255, 255, 0.07);
+
+  --surface: #0d1626;
+  --surface-2: #0a121f;
+  --surface-3: #131e31;
+  --border: rgba(148, 178, 226, 0.14);
+  --border-strong: rgba(148, 178, 226, 0.24);
+
+  --accent: #5b8cff;
+  --accent-ink: #a9c3ff;
+  --accent-soft: rgba(91, 140, 255, 0.14);
+  --accent-line: rgba(91, 140, 255, 0.34);
+
+  --amber: #f0a92b;
+  --amber-bg: rgba(240, 169, 43, 0.14);
+  --amber-bd: rgba(240, 169, 43, 0.32);
+  --amber-ink: #f3c268;
+  --amber-soft: rgba(240, 169, 43, 0.14);
+
+  --violet: #a78bfa;
+  --violet-bg: rgba(167, 139, 250, 0.14);
+  --violet-bd: rgba(167, 139, 250, 0.3);
+  --violet-ink: #c4a9fd;
+  --violet-soft: rgba(167, 139, 250, 0.14);
+
+  --slate: #94a3bb;
+  --slate-bg: rgba(148, 163, 187, 0.12);
+  --slate-bd: rgba(148, 163, 187, 0.26);
+  --slate-ink: #c3cfe2;
+  --slate-soft: rgba(148, 163, 187, 0.12);
+
+  --green: #34d399;
+  --green-bg: rgba(52, 211, 153, 0.13);
+  --green-bd: rgba(52, 211, 153, 0.3);
+  --green-ink: #6ee7b7;
+  --green-soft: rgba(52, 211, 153, 0.13);
+
+  --red: #f87171;
+  --red-bg: rgba(248, 113, 113, 0.13);
+  --red-bd: rgba(248, 113, 113, 0.3);
+  --red-ink: #fca5a5;
+  --red-soft: rgba(248, 113, 113, 0.13);
+
+  --pink-bg: rgba(244, 114, 182, 0.13);
+  --pink-bd: rgba(244, 114, 182, 0.28);
+  --pink-ink: #f9a8d4;
+
+  --drive-bg: rgba(91, 140, 255, 0.14);
+  --drive-bd: rgba(91, 140, 255, 0.32);
+  --drive-ink: #a9c3ff;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow: 0 16px 34px -20px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 40px 70px -30px rgba(0, 0, 0, 0.85), 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Paper stays paper. */
+:root[data-theme='dark'] .log-sheet,
+:root[data-theme='dark'] .log-sheet__frame {
+  background: #fff;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+/* Slim, self-effacing scrollbars. Chrome's default bar is heavy enough to break
+   the minimalism, and it has to follow the theme rather than stay grey. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-2);
+  background-clip: content-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  /* The body background propagates to the canvas, so this single rule paints the
+     whole viewport. `fixed` on the two glows keeps them anchored to the top of
+     the screen instead of stretching down a 3,000px results page. */
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
+    radial-gradient(900px 520px at 12% -8%, var(--bg-glow-a), transparent 62%),
+    radial-gradient(780px 460px at 96% -4%, var(--bg-glow-b), transparent 60%);
+  background-size: 46px 46px, 46px 46px, 100% 100%, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-attachment: scroll, scroll, fixed, fixed;
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  line-height: 1.5;
+  /* Every number in this app is read against another number - hours, miles,
+     odometer. Tabular figures let them line up instead of shimmying. */
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- shell -- */
+
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  /* Sticky, so the HOS limits and the theme/haul controls stay reachable while a
+     long itinerary scrolls. Translucent rather than opaque on purpose: the grid
+     shows faintly through, which is what separates glass from a painted band. */
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 18, 32, 0.9) 0%,
+    rgba(22, 35, 60, 0.86) 58%,
+    rgba(29, 51, 87, 0.84) 100%
+  );
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 34px -26px rgba(5, 10, 20, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.topbar__inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 15px 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand__mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, var(--amber), #f97316);
+  display: grid;
+  place-items: center;
+  color: #1b1206;
+  box-shadow: 0 8px 22px -8px rgba(245, 158, 11, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  flex: none;
+}
+
+.brand__text h1 {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.brand__text span {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.topbar__facts {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.fact-chip {
+  font-size: 12px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  /* Chips in the topbar are the one place that never flips theme, so they are
+     tinted against the bar rather than against --glass. */
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.fact-chip b {
+  color: #fff;
+  font-weight: 650;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 26px 28px 64px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.sticky-panel {
+  position: sticky;
+  /* Clears the sticky topbar so the form never slides underneath it. */
+  top: 92px;
+}
+
+@media (max-width: 1180px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sticky-panel {
+    position: static;
+  }
+}
+
+/* ----------------------------------------------------------------- cards -- */
+
+.card {
+  /* The everyday pane. The inset lip is doing the real work: a translucent fill
+     on its own reads as "faded", and it is the 1px top highlight plus the
+     diffuse drop shadow that read as "thick glass". */
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+  backdrop-filter: blur(var(--blur)) saturate(150%);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--glass-lip);
+  overflow: hidden;
+}
+
+.card__head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--glass-line-soft);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--glass-dim);
+}
+
+.card__head h2 {
+  font-size: 15px;
+}
+
+.card__head h3 {
+  font-size: 14px;
+}
+
+.card__head p {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+
+.card__body {
+  padding: 20px;
+}
+
+.card__body--tight {
+  padding: 14px 16px;
+}
+
+/* ------------------------------------------------------------------ form -- */
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.field__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.field__hint {
+  font-size: 11.5px;
+  color: var(--muted-2);
+  font-weight: 500;
+}
+
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap .input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted-2);
+  pointer-events: none;
+  display: flex;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-line);
+  /* Nearly opaque on purpose: an input still has to be readable with the map
+     and its labels moving behind it. */
+  background: var(--glass-strong);
+  color: var(--ink);
+  font-size: 14px;
+  font-family: inherit;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.input-wrap .input {
+  padding-left: 38px;
+}
+
+.input::placeholder {
+  color: var(--muted-2);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  /* The tokenised ring means the focus halo now follows the accent instead of
+     hardcoding the old blue, so it survives a theme change. */
+  box-shadow: 0 0 0 3.5px var(--accent-soft), inset 0 1px 0 var(--glass-lip);
+}
+
+.input:disabled {
+  background: var(--surface-3);
+  color: var(--muted);
+}
+
+.field__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
+  backdrop-filter: blur(var(--blur)) saturate(160%);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 var(--glass-lip);
+  overflow: hidden;
+  max-height: 268px;
+  overflow-y: auto;
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  font-size: 13.5px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  color: var(--ink);
+  border-bottom: 1px solid var(--glass-line-soft);
+}
+
+.suggestion:last-child {
+  border-bottom: none;
+}
+
+.suggestion:hover,
+.suggestion--active {
+  background: var(--accent-soft);
+}
+
+.suggestion__muted {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.range-row input[type='range'] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.range-badge {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  min-width: 74px;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------- buttons -- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  padding: 11px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.12s, box-shadow 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  /* The single saturated solid on the page. Everything else is glass, so the
+     one primary action reads instantly without needing a louder colour. */
+  background: linear-gradient(135deg, var(--accent), #1e3fa8);
+  color: #fff;
+  box-shadow: 0 12px 26px -12px rgba(37, 99, 235, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.btn--primary:hover {
+  box-shadow: 0 16px 32px -12px rgba(37, 99, 235, 1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn--primary:disabled {
+  background: var(--muted-2);
+  box-shadow: none;
+  cursor: not-allowed;
+  color: #fff;
+}
+
+.btn--ghost {
+  background: var(--glass-strong);
+  border-color: var(--glass-line);
+  color: var(--ink-soft);
+  box-shadow: inset 0 1px 0 var(--glass-lip);
+}
+
+.btn--ghost:hover {
+  background: var(--glass);
+  border-color: var(--border-strong);
+}
+
+.btn--subtle {
+  background: var(--glass-dim);
+  color: var(--ink-soft);
+  border-color: var(--glass-line-soft);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.btn--subtle:hover {
+  background: var(--glass);
+  border-color: var(--glass-line);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+
+/* ------------------------------------------------------------------ misc -- */
+
+.alert {
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 13.5px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid;
+}
+
+.alert--error {
+  background: var(--red-bg);
+  border-color: var(--red-bd);
+  color: var(--red-ink);
+}
+
+.alert--info {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent-ink);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  animation: spin 0.7s linear infinite;
+  flex: none;
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.skeleton {
+  /* Tokenised so placeholders stop flashing bright white on a dark console -
+     which is what the old hardcoded #eef2f8 shimmer did. */
+  background: linear-gradient(
+    90deg,
+    var(--glass-dim) 25%,
+    var(--glass-strong) 50%,
+    var(--glass-dim) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ------------------------------------------------------------------ tabs -- */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 5px;
+  /* A recessed well: dim fill, soft border. The active segment is a brighter
+     pane sitting on top of it, which is what makes the control read as a
+     physical switch rather than three coloured labels. */
+  background: var(--glass-dim);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-line-soft);
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  padding: 9px 16px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab--active {
+  background: var(--glass-strong);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-lip);
+}
+
+.tab__count {
+  font-size: 11px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-weight: 700;
+}
+
+/* ----------------------------------------------------------------- stats -- */
+
+.stats {
+  display: grid;
+  /* 140px, not 148px. At 148 the six summary tiles wrapped five-and-one and left
+     a ragged hole in the last row on a 1440px screen. */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  border: 1px solid var(--glass-line-soft);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+  background: var(--glass-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.stat__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-2);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat__value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.stat--accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+.stat--amber {
+  background: var(--amber-bg);
+  border-color: var(--amber-bd);
+}
+
+/* ------------------------------------------------------------------- map -- */
+
+.result-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(310px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1320px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-shell {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-line);
+  background: var(--glass-dim);
+}
+
+.map-canvas {
+  height: 560px;
+  width: 100%;
+}
+
+.map-legend {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 500;
+  /* The heaviest glass in the app: it sits over photoreal map tiles and still
+     has to stay legible, so it gets a thicker fill and a stronger blur than an
+     ordinary card. */
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow), inset 0 1px 0 var(--glass-lip);
+  max-width: calc(100% - 28px);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.legend-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.22);
+  flex: none;
+}
+
+.pin {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.4);
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  font-family: var(--mono);
+  transition: transform 0.15s;
+}
+
+.pin:hover {
+  transform: scale(1.14);
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.leaflet-popup-content h4 {
+  font-size: 13.5px;
+  margin-bottom: 3px;
+}
+
+.leaflet-popup-content .popup-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.leaflet-container {
+  font-family: var(--font);
+}
+
+/* ---------------------------------------------------------------- stops -- */
+
+.stops {
+  display: flex;
+  flex-direction: column;
+}
+
+.stop {
+  display: grid;
+  grid-template-columns: 62px 30px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 4px;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13.5px;
+}
+
+.stop:last-child {
+  border-bottom: none;
+}
+
+.stop--drive {
+  background: linear-gradient(90deg, var(--drive-bg), transparent 65%);
+}
+
+.stop__time {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.stop__marker {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 0 auto;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.22);
+}
+
+.stop__body {
+  min-width: 0;
+}
+
+.stop__title {
+  font-weight: 650;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stop__meta {
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-top: 1px;
+}
+
+.stop__right {
+  text-align: right;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.stop--pin {
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  border-radius: 10px;
+  font: inherit;
+  color: inherit;
+  transition: background 0.14s;
+}
+
+.stop--pin:hover {
+  background: var(--glass-dim);
+}
+
+.stop--active {
+  background: var(--accent-soft) !important;
+}
+
+.stop__marker--drive {
+  background: var(--drive-bg) !important;
+  color: var(--drive-ink) !important;
+  box-shadow: none !important;
+}
+
+.day-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 6px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+  background: var(--glass-dim);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-line-soft);
+}
+
+.day-divider:first-child {
+  margin-top: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.badge--pickup { background: var(--green-bg); color: var(--green-ink); border-color: var(--green-bd); }
+.badge--dropoff { background: var(--pink-bg); color: var(--pink-ink); border-color: var(--pink-bd); }
+.badge--fuel { background: var(--amber-bg); color: var(--amber-ink); border-color: var(--amber-bd); }
+.badge--break { background: var(--violet-bg); color: var(--violet-ink); border-color: var(--violet-bd); }
+.badge--rest { background: var(--slate-bg); color: var(--slate-ink); border-color: var(--slate-bd); }
+.badge--restart { background: var(--red-bg); color: var(--red-ink); border-color: var(--red-bd); }
+.badge--inspection { background: var(--drive-bg); color: var(--drive-ink); border-color: var(--drive-bd); }
+
+/* ------------------------------------------------------------- log sheet -- */
+
+.logbook {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.logbook__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.log-sheet {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.log-sheet__frame {
+  background: #fff;
+  padding: 6px;
+}
+
+.log-sheet svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.log-sheet__caption {
+  padding: 10px 16px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.log-sheet__caption b {
+  color: var(--ink);
+}
+
+
+.chip {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--glass-dim);
+  border: 1px solid var(--glass-line-soft);
+  color: var(--ink-soft);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 var(--glass-lip);
+}
+
+
+/* ---------------------------------------------------------------- empty -- */
+
+.empty {
+  /* Solid glass instead of the old dashed placeholder frame. This is the first
+     thing anyone sees, so it is what sets the material for the whole app. */
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-lg);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+  backdrop-filter: blur(var(--blur)) saturate(150%);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--glass-lip);
+  padding: 44px 34px;
+  text-align: center;
+}
+
+.empty__icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  color: var(--accent-ink);
+  box-shadow: inset 0 1px 0 var(--glass-lip);
+}
+
+.empty h2 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+
+.empty p {
+  color: var(--muted);
+  max-width: 560px;
+  margin: 0 auto 18px;
+  font-size: 13.5px;
+}
+
+/* ------------------------------------------------------------ utilities -- */
+
+.muted {
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-2);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  border: none;
+  margin: 16px 0;
+}
+
+.split-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 6px 14px;
+  font-size: 13px;
+}
+
+.kv dt {
+  color: var(--muted);
+}
+
+.kv dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------ responsive -- */
+
+@media (max-width: 900px) {
+  .main {
+    padding: 18px 14px 48px;
+  }
+  .topbar__inner {
+    padding: 14px 16px;
+  }
+  .card__body {
+    padding: 16px;
+  }
+  .map-canvas {
+    height: 400px;
+  }
+  .stop {
+    grid-template-columns: 54px 26px minmax(0, 1fr);
+  }
+  .stop__right {
+    grid-column: 3;
+    text-align: left;
+  }
+  .tabs {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* ------------------------------------------------------ route instructions -- */
+
+.directions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.directions__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.directions__arrow {
+  color: var(--muted-2);
+  padding: 0 2px;
+}
+
+.directions__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.direction {
+  display: grid;
+  grid-template-columns: 34px 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 4px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.direction:last-child {
+  border-bottom: none;
+}
+
+.direction__seq {
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-align: right;
+}
+
+.direction__glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--drive-bg);
+  color: var(--drive-ink);
+  border: 1px solid var(--drive-bd);
+}
+
+.direction__text {
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.direction__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.direction__dist {
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.direction__mile {
+  color: var(--muted-2);
+}
+
+
+
+.fact-chip--action {
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+
+.fact-chip--action:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ------------------------------------------------------------ responsive -- */
+
+/* The two-column layout already collapses at 1180px. These are the narrow-phone
+   fixes: the tab strip scrolls instead of squashing, the turn list stacks, and
+   the 56-column log grid pans horizontally rather than shrinking to mush. */
+@media (max-width: 720px) {
+  .main {
+    padding: 18px 14px 48px;
+  }
+  .topbar__inner {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .brand__text span {
+    display: none;
+  }
+  .tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .direction {
+    grid-template-columns: 26px 30px minmax(0, 1fr);
+  }
+  .direction__meta {
+    grid-column: 2 / -1;
+    padding-top: 4px;
+    gap: 10px;
+  }
+  .log-sheet__frame {
+    overflow-x: auto;
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .split-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Keyboard focus is always visible; mouse clicks stay unringed. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------- print -- */
+
+/* A daily log sheet is a wide 24-hour graph grid. Without an explicit landscape
+   page rule the browser prints portrait and clips the late-evening hours off
+   the right edge, so the page geometry has to be stated here. */
+@page {
+  size: letter landscape;
+  margin: 8mm;
+}
+
+@media print {
+  .topbar,
+  .no-print,
+  .tabs,
+  .map-legend,
+  .directions__toolbar {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .main,
+  .layout,
+  .column,
+  .result-grid {
+    display: block;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    gap: 0;
+  }
+  .card,
+  .log-sheet,
+  .log-sheet__frame {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .logbook {
+    gap: 0;
+  }
+  /* Break *before* every sheet after the first. Putting break-after on every
+     sheet instead leaves a trailing blank page at the end of the document. */
+  .log-sheet + .log-sheet {
+    break-before: page;
+    page-break-before: always;
+  }
+  .log-sheet:first-child {
+    break-before: auto;
+    page-break-before: auto;
+  }
+}
+
+
+
+
