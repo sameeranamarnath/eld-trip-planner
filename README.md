@@ -1,4 +1,4 @@
-# Spotter ELD Trip Planner
+# ELD Trip Planner
 
 Give it where the truck is now, a pickup, a drop-off and how many hours are already used on the
 70-hour cycle, and it returns:
@@ -115,7 +115,7 @@ Two pieces, deployed separately.
   `WSGI_APPLICATION`, so no `rewrites` are needed; `backend/vercel.json` only raises the function
   timeout to 60 s, and `backend/api/index.py` exposes the same WSGI callable as `app` for
   runtimes that look for that name.
-- **Docker** - `docker build -t spotter-eld . && docker run -p 8000:8000 spotter-eld`. Works
+- **Docker** - `docker build -t eld-trip-planner . && docker run -p 8000:8000 spotter-eld`. Works
   anywhere that runs containers (Fly.io, Railway, Cloud Run); the image serves the API through
   gunicorn.
 
